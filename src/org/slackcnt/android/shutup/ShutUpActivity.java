@@ -1,33 +1,17 @@
 package org.slackcnt.android.shutup;
 
-import org.slackcnt.android.shutup.ShutUpService.LocalBinder;
-
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 public class ShutUpActivity extends Activity
 {
-	private static ShutUpService shutUpService;
-
-	private final ServiceConnection serviceConnection = new ServiceConnection()
-	{
-		@Override
-		public void onServiceDisconnected(ComponentName arg0)
-		{
-			shutUpService = null;
-		}
-
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service)
-		{
-			shutUpService = ((LocalBinder) service).getService();
-		}
-	};
+	private Intent shutUpServiceIntent;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -41,10 +25,33 @@ public class ShutUpActivity extends Activity
 	{
 		super.onResume();
 
-		Intent intent = new Intent(this, ShutUpService.class);
-		if(shutUpService == null) {
-			startService(intent);
+		shutUpServiceIntent = new Intent(this, ShutUpService.class);
+		Button btnStartStop = (Button) findViewById(R.id.btnStartStop);
+		btnStartStop.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				if(isServiceRunning()) {
+					stopService(shutUpServiceIntent);
+				} else {
+					startService(shutUpServiceIntent);
+				}
+			}
+		});
+	}
+
+	private boolean isServiceRunning()
+	{
+		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+		for(RunningServiceInfo service : manager
+				.getRunningServices(Integer.MAX_VALUE)) {
+			if(ShutUpService.class.getName().equals(
+					service.service.getClassName())) {
+				return true;
+			}
 		}
-		bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+		return false;
 	}
 }
