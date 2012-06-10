@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 public class ShutUpActivity extends Activity
 {
-	private static final String START_AT_BOOT = "startAtBoot";
+	public static final String START_AT_BOOT = "startAtBoot";
 
 	private Intent shutUpServiceIntent;
 
