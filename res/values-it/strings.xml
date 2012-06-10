@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">ShutUp</string>
+	<string name="service_is">ShutUp è </string>
+	<string name="running">in funzione.</string>
+	<string name="stopped">spento.</string>
+
+	<string name="start">Avvia</string>
+	<string name="stop">Spegni</string>
+	<string name="start_at_boot">Avvia all\'accensione del telefono</string>
+</resources>

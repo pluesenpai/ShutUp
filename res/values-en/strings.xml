@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">ShutUp</string>
+	<string name="service_is">ShutUp is </string>
+	<string name="running">running.</string>
+	<string name="stopped">stopped.</string>
+
+	<string name="start">Start</string>
+	<string name="stop">Stop</string>
+	<string name="start_at_boot">Start at boot</string>
+</resources>
