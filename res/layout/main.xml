@@ -11,18 +11,22 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Service is " />
+			android:text="@string/service_is" />
 		<TextView
-			android:id="@+id/textView1"
+			android:id="@+id/txtStatus"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="running" />
+			android:layout_height="wrap_content" />
 	</LinearLayout>
 
 	<Button
 		android:id="@+id/btnStartStop"
 		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+
+	<CheckBox
+		android:id="@+id/startAtBoot"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Start|Stop" />
+		android:text="@string/start_at_boot" />
 
 </LinearLayout>

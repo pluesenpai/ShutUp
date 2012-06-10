@@ -4,14 +4,29 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.TextView;
 
 public class ShutUpActivity extends Activity
 {
+	private static final String START_AT_BOOT = "startAtBoot";
+
 	private Intent shutUpServiceIntent;
+
+	private Button btnStartStop;
+
+	private TextView txtStatus;
+
+	private CheckBox startAtBootCheckbox;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -26,19 +41,42 @@ public class ShutUpActivity extends Activity
 		super.onResume();
 
 		shutUpServiceIntent = new Intent(this, ShutUpService.class);
-		Button btnStartStop = (Button) findViewById(R.id.btnStartStop);
-		btnStartStop.setOnClickListener(new OnClickListener()
-		{
-			@Override
-			public void onClick(View v)
-			{
-				if(isServiceRunning()) {
-					stopService(shutUpServiceIntent);
-				} else {
-					startService(shutUpServiceIntent);
-				}
-			}
-		});
+
+		initViews();
+		setupListeners();
+		setInitValues();
+	}
+
+	private void setupListeners()
+	{
+		btnStartStop.setOnClickListener(new StartStopOnClickListener());
+		startAtBootCheckbox
+				.setOnCheckedChangeListener(new StartAtBootOnCheckedChangeListener());
+	}
+
+	private void initViews()
+	{
+		btnStartStop = (Button) findViewById(R.id.btnStartStop);
+		txtStatus = (TextView) findViewById(R.id.txtStatus);
+		startAtBootCheckbox = (CheckBox) findViewById(R.id.startAtBoot);
+	}
+
+	private void setInitValues()
+	{
+		if(isServiceRunning()) {
+			txtStatus.setText(R.string.running);
+			btnStartStop.setText(R.string.stop);
+		} else {
+			txtStatus.setText(R.string.stopped);
+			btnStartStop.setText(R.string.start);
+		}
+
+		SharedPreferences sharedPreferences;
+		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean startAtBoot = sharedPreferences
+				.getBoolean(START_AT_BOOT, false);
+
+		startAtBootCheckbox.setChecked(startAtBoot);
 	}
 
 	private boolean isServiceRunning()
@@ -53,5 +91,43 @@ public class ShutUpActivity extends Activity
 		}
 
 		return false;
+	}
+
+	// LISTENERS
+
+	private final class StartStopOnClickListener implements OnClickListener
+	{
+		@Override
+		public void onClick(View v)
+		{
+			if(isServiceRunning()) {
+				stopService(shutUpServiceIntent);
+				btnStartStop.setText(R.string.start);
+			} else {
+				startService(shutUpServiceIntent);
+				btnStartStop.setText(R.string.stop);
+			}
+		}
+	}
+
+	private final class StartAtBootOnCheckedChangeListener implements
+			OnCheckedChangeListener
+	{
+		private SharedPreferences sharedPreferences;
+
+		private StartAtBootOnCheckedChangeListener()
+		{
+			this.sharedPreferences = PreferenceManager
+					.getDefaultSharedPreferences(ShutUpActivity.this);
+		}
+
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView,
+				boolean isChecked)
+		{
+			Editor editor = sharedPreferences.edit();
+			editor.putBoolean(START_AT_BOOT, isChecked);
+			editor.commit();
+		}
 	}
 }
