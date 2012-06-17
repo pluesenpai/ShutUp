@@ -36,13 +36,11 @@ public class ShutUpService extends Service implements SensorEventListener
 
 	private int ringerModeBefore = -1;
 
-	private final BroadcastReceiver telephonyBroadcastReceiver = new BroadcastReceiver()
-	{
+	private final BroadcastReceiver telephonyBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent)
 		{
-			PhoneStateListener phoneStateListener = new PhoneStateListener()
-			{
+			PhoneStateListener phoneStateListener = new PhoneStateListener() {
 				@Override
 				public void onCallStateChanged(int state, String incomingNumber)
 				{
@@ -86,6 +84,16 @@ public class ShutUpService extends Service implements SensorEventListener
 				TelephonyManager.ACTION_PHONE_STATE_CHANGED));
 
 		return START_NOT_STICKY;
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+
+		Log.i(TAG, "onDestroy");
+
+		unregisterReceiver(telephonyBroadcastReceiver);
 	}
 
 	private void enableSensorListener()
@@ -135,11 +143,13 @@ public class ShutUpService extends Service implements SensorEventListener
 		return mBinder;
 	}
 
+	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy)
 	{
 		Log.i(TAG, "onAccuracyChanged");
 	}
 
+	@Override
 	public void onSensorChanged(SensorEvent event)
 	{
 		if(event.sensor.getType() != Sensor.TYPE_ACCELEROMETER) {
@@ -153,7 +163,7 @@ public class ShutUpService extends Service implements SensorEventListener
 			lastUpdate = curTime;
 
 			float z = event.values[2];
-			if(last_z >= 0 && z < 0) {
+			if((last_z >= 0) && (z < 0)) {
 				Log.i(TAG, "phone flipped face down");
 				audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
 			}
