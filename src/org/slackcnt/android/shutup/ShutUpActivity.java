@@ -103,9 +103,11 @@ public class ShutUpActivity extends Activity
 			if(isServiceRunning()) {
 				stopService(shutUpServiceIntent);
 				btnStartStop.setText(R.string.start);
+				txtStatus.setText(R.string.stopped);
 			} else {
 				startService(shutUpServiceIntent);
 				btnStartStop.setText(R.string.stop);
+				txtStatus.setText(R.string.running);
 			}
 		}
 	}
@@ -113,7 +115,7 @@ public class ShutUpActivity extends Activity
 	private final class StartAtBootOnCheckedChangeListener implements
 			OnCheckedChangeListener
 	{
-		private SharedPreferences sharedPreferences;
+		private final SharedPreferences sharedPreferences;
 
 		private StartAtBootOnCheckedChangeListener()
 		{
