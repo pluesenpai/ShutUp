@@ -25,7 +25,7 @@ public class ShutUpReceiver extends BroadcastReceiver
 			context.startService(myIntent);
 			Log.i(TAG, "Started Service");
 		} else {
-			Log.i(TAG, "Preference set to not start at boot");
+			Log.i(TAG, "Preference set to NOT start ShutUp at boot");
 		}
 	}
 }

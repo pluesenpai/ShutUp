@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">ShutUp</string>
-	<string name="service_is">ShutUp è </string>
+	<string name="service_is">ShutUp è\u0020</string>
 	<string name="running">in funzione.</string>
 	<string name="stopped">spento.</string>
 
